@@ -68,7 +68,7 @@ namespace SisNet.Application.Services
 
             if (vaga == null)
             {
-                throw new Exception("Vaga não encontrada");
+                throw new Exception("Vaga não encontrada.");
             }
 
             vagaDomainService.Remove(vaga);
