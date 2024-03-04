@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using SisNet.Application.DTO;
 using SisNet.Application.Interfaces;
 using SisNet.Domain.Interfaces.Services;
 using SisNet.Domain.Models;
@@ -16,14 +17,14 @@ namespace SisNet.Application.Services
             this.vagaDomainService = vagaDomainService;
         }
 
-        public void Add(Vaga entity)
+        public void Add(VagaDTO dto)
         {
             var vaga = new Vaga
             {
                 Id = Guid.NewGuid(),
-                Codigo = entity.Codigo,
-                Titulo = entity.Titulo,
-                Descricao = entity.Descricao,
+                Codigo = dto.Codigo,
+                Titulo = dto.Titulo,
+                Descricao = dto.Descricao,
                 DataCadastro = DateTime.Now,
                 Ativo = true
             };
@@ -38,19 +39,19 @@ namespace SisNet.Application.Services
             vagaDomainService.Add(vaga);
         }
 
-        public void Update(Vaga entity)
+        public void Update(VagaDTO dto)
         {
-            var vaga = vagaDomainService.GetById(entity.Id);
+            var vaga = vagaDomainService.GetById(dto.Id);
 
-            if(vaga == null)
+            if (vaga == null)
             {
                 throw new Exception("Vaga não encontrada");
             }
 
-            vaga.Titulo = entity.Titulo;
-            vaga.Descricao = entity.Descricao;
-            vaga.Codigo = entity.Codigo;
-            vaga.Ativo  = entity.Ativo;
+            vaga.Titulo = dto.Titulo;
+            vaga.Descricao = dto.Descricao;
+            vaga.Codigo = dto.Codigo;
+            vaga.Ativo = dto.Ativo;
 
             var validation = new VagaValidation().Validate(vaga);
 
@@ -62,9 +63,9 @@ namespace SisNet.Application.Services
             vagaDomainService.Update(vaga);
         }
 
-        public void Remove(Vaga entity)
+        public void Remove(Guid id)
         {
-            var vaga = vagaDomainService.GetById(entity.Id);
+            var vaga = vagaDomainService.GetById(id);
 
             if (vaga == null)
             {
@@ -74,19 +75,74 @@ namespace SisNet.Application.Services
             vagaDomainService.Remove(vaga);
         }
 
-        public List<Vaga> GetAll()
+        public List<VagaDTO> GetAll()
         {
-            return vagaDomainService.GetAll();
+            var lista = vagaDomainService.GetAll();
+            List<VagaDTO> vagas = new List<VagaDTO>();
+
+            if (lista != null)
+            {
+                foreach (var item in vagas)
+                {
+                    var v = new VagaDTO()
+                    {
+                        Id = item.Id,
+                        Codigo = item.Codigo,
+                        DataCadastro = item.DataCadastro,
+                        Descricao = item.Descricao,
+                        Titulo = item.Titulo,
+                        Ativo = item.Ativo
+                    };
+
+                    vagas.Add(v);
+                }
+            }
+
+            return vagas;
         }
 
-        public Vaga GetById(Guid id)
+        public VagaDTO GetById(Guid id)
         {
-            return vagaDomainService.GetById(id);
+            var vaga = vagaDomainService.GetById(id);
+
+            if (vaga == null)
+            {
+                throw new Exception("Vaga não encontrada.");
+            }
+
+            var vagaDto = new VagaDTO()
+            {
+                Id = vaga.Id,
+                Codigo = vaga.Codigo,
+                DataCadastro = vaga.DataCadastro,
+                Descricao = vaga.Descricao,
+                Titulo = vaga.Titulo,
+                Ativo = vaga.Ativo
+            };
+
+            return vagaDto;
         }
 
-        public Vaga GetByCodigo(int codigo)
+        public VagaDTO GetByCodigo(int codigo)
         {
-            return vagaDomainService.GetByCodigo(codigo);
+            var vaga = vagaDomainService.GetByCodigo(codigo);
+
+            if (vaga == null)
+            {
+                throw new Exception("Vaga não encontrada.");
+            }
+
+            var vagaDto = new VagaDTO()
+            {
+                Id = vaga.Id,
+                Codigo = vaga.Codigo,
+                DataCadastro = vaga.DataCadastro,
+                Descricao = vaga.Descricao,
+                Titulo = vaga.Titulo,
+                Ativo = vaga.Ativo
+            };
+
+            return vagaDto;
         }
 
         public void Dispose()

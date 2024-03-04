@@ -1,13 +1,15 @@
-﻿using SisNet.Domain.Models;
+﻿using SisNet.Application.DTO;
+using SisNet.Domain.Models;
 
 namespace SisNet.Application.Interfaces
 {
     public interface IVagaApplicationService : IDisposable
     {
-        void Add(Vaga entity);
-        void Update(Vaga entity);
-        void Remove(Vaga entity);
-        List<Vaga> GetAll();
-        Vaga GetById(Guid id);
+        void Add(VagaDTO entity);
+        void Update(VagaDTO entity);
+        void Remove(Guid id);
+        List<VagaDTO> GetAll();
+        VagaDTO GetById(Guid id);
+        VagaDTO GetByCodigo(int codigo);
     }
 }

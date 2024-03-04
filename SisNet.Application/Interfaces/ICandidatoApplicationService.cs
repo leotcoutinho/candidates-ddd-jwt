@@ -1,12 +1,13 @@
-﻿using SisNet.Domain.Models;
+﻿using SisNet.Application.DTO;
+using SisNet.Domain.Models;
 
 namespace SisNet.Application.Interfaces
 {
     public interface ICandidatoApplicationService : IDisposable
     {
-        void Add(Candidato entity);
-        void Update(Candidato entity);
-        void Remove(Candidato entity);
+        void Add(CandidatoDTO dto);
+        void Update(CandidatoDTO dto);
+        void Remove(Guid id);
         List<Candidato> GetAll();
         Candidato GetById(Guid id);
     }

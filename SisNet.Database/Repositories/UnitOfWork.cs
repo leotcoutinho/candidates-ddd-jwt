@@ -9,7 +9,7 @@ namespace SisNet.Database.Repositories
         // DIP->princípio de injeção de dependência 
         private readonly SqlContext context;
         // transactions
-        private IDbContextTransaction transaction;
+        private IDbContextTransaction? transaction;
 
         public UnitOfWork(SqlContext context)
         {

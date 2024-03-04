@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using SisNet.Application.DTO;
 using SisNet.Application.Interfaces;
 using SisNet.Domain.Interfaces.Services;
 using SisNet.Domain.Models;
@@ -15,16 +16,16 @@ namespace SisNet.Application.Services
             this.candidatoDomainService = candidatoDomainService;
         }
 
-        public void Add(Candidato entity)
+        public void Add(CandidatoDTO dto)
         {
             var candidato = new Candidato
             {
                 Id = Guid.NewGuid(),
-                Nome = entity.Nome,
-                Email = entity.Email,
-                Link = entity.Link,
-                Cpf = entity.Cpf,
-                DataNascimento = entity.DataNascimento,
+                Nome = dto.Nome,
+                Email = dto.Email,
+                Link = dto.Link,
+                Cpf = dto.Cpf,
+                DataNascimento = dto.DataNascimento,
                 DataCadastro = DateTime.Now
             };
 
@@ -38,20 +39,20 @@ namespace SisNet.Application.Services
             candidatoDomainService.Add(candidato);
         }
 
-        public void Update(Candidato entity)
+        public void Update(CandidatoDTO dto)
         {
-            var candidato = candidatoDomainService.GetById(entity.Id);
+            var candidato = candidatoDomainService.GetById(dto.Id);
 
             if (candidato == null)
             {
                 throw new Exception("Candidato é inválido.");
             }
 
-            candidato.Nome = entity.Nome;
-            candidato.Email = entity.Email;
-            candidato.Cpf = entity.Cpf;
-            candidato.Link = entity.Link;
-            candidato.DataNascimento = entity.DataNascimento;
+            candidato.Nome = dto.Nome;
+            candidato.Email = dto.Email;
+            candidato.Cpf = dto.Cpf;
+            candidato.Link = dto.Link;
+            candidato.DataNascimento = dto.DataNascimento;
 
             var validation = new CandidatoValidation().Validate(candidato);
 
@@ -63,9 +64,9 @@ namespace SisNet.Application.Services
             candidatoDomainService.Update(candidato);
         }
 
-        public void Remove(Candidato entity)
+        public void Remove(Guid id)
         {
-            var candidato = candidatoDomainService.GetById(entity.Id);
+            var candidato = candidatoDomainService.GetById(id);
 
             if (candidato == null)
             {

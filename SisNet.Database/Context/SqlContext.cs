@@ -9,7 +9,7 @@ namespace SisNet.Database.Context
     {
         #region "***instanciando o banco"
 
-        // construtor foi comentado para o uso do OnConfiguring
+        // construtor foi comentado para o uso do OnConfiguring para configurar o EF para o migrations
         // public SqlContext(DbContextOptions<SqlContext> options) : base(options) { } 
 
 
@@ -41,13 +41,14 @@ namespace SisNet.Database.Context
 
         #endregion
 
+        public SqlContext(DbContextOptions<SqlContext> options) : base(options) { }
+
         public DbSet<Candidato> Vaga { get; set; }
         public DbSet<Candidato> Candidato { get; set; }
         public DbSet<CandidatoVaga> CandidatoVaga { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             base.OnModelCreating(modelBuilder);
 
             // mappings ORM

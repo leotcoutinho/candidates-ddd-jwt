@@ -13,7 +13,7 @@ namespace SisNet.Database.Repositories
 
         public Vaga GetByCodigo(int codigo)
         {
-            return dbSet.FirstOrDefault(x=>x.Codigo.Equals(codigo));
+            return dbSet.First(x => x.Codigo.Equals(codigo));
         }
     }
 }

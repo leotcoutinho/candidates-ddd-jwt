@@ -7,7 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SisNet.Application\SisNet.Application.csproj" />
+    <ProjectReference Include="..\SisNet.Database\SisNet.Database.csproj" />
+    <ProjectReference Include="..\SisNet.Domain\SisNet.Domain.csproj" />
+    <ProjectReference Include="..\SisNet.IoC\SisNet.IoC.csproj" />
   </ItemGroup>
 
 </Project>

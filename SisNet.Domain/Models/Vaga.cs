@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks.Sources;
-
-namespace SisNet.Domain.Models
+﻿namespace SisNet.Domain.Models
 {
     public class Vaga
     {
@@ -8,6 +6,7 @@ namespace SisNet.Domain.Models
         {
                 
         }
+
         public Vaga(int codigo, string titulo, string descricao)
         {    
             Codigo = codigo;
