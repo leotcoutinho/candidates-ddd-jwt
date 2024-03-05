@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using SisNet.Api.Adapters;
 using SisNet.Application.DTO;
 using SisNet.Application.Interfaces;
 
@@ -16,13 +18,17 @@ namespace SisNet.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(CandidatoDTO dto)
+        public IActionResult Post(CandidatoPostDTO dto)
         {
             try
             {
                 candidatoApplicationService.Add(dto);
 
                 return Ok(new { Message = "Candidato adicionado com sucesso."});
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ValidationAdapter.Parse(ex.Errors));
             }
             catch (Exception e)
             {
@@ -31,12 +37,16 @@ namespace SisNet.Api.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put(CandidatoDTO dto)
+        public IActionResult Put(CandidatoGetDTO dto)
         {
             try
             {
                 candidatoApplicationService.Update(dto);
                 return Ok(new { Message = "Candidato atualizado com sucesso." });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ValidationAdapter.Parse(ex.Errors));
             }
             catch (Exception e)
             {

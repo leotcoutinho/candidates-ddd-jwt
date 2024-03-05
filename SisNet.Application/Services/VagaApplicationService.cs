@@ -17,17 +17,14 @@ namespace SisNet.Application.Services
             this.vagaDomainService = vagaDomainService;
         }
 
-        public void Add(VagaDTO dto)
+        public void Add(VagaPostDTO dto)
         {
-            var vaga = new Vaga
-            {
-                Id = Guid.NewGuid(),
-                Codigo = dto.Codigo,
-                Titulo = dto.Titulo,
-                Descricao = dto.Descricao,
-                DataCadastro = DateTime.Now,
-                Ativo = true
-            };
+            var vaga = new Vaga(
+                Guid.NewGuid(), 
+                dto.Codigo,
+                dto.Titulo,
+                dto.Descricao,
+                DateTime.Now,true);
 
             var validation = new VagaValidation().Validate(vaga);
 
@@ -39,7 +36,7 @@ namespace SisNet.Application.Services
             vagaDomainService.Add(vaga);
         }
 
-        public void Update(VagaDTO dto)
+        public void Update(VagaGetDTO dto)
         {
             var vaga = vagaDomainService.GetById(dto.Id);
 
@@ -48,12 +45,15 @@ namespace SisNet.Application.Services
                 throw new Exception("Vaga não encontrada");
             }
 
-            vaga.Titulo = dto.Titulo;
-            vaga.Descricao = dto.Descricao;
-            vaga.Codigo = dto.Codigo;
-            vaga.Ativo = dto.Ativo;
+            var vagaAtualizada = new Vaga(
+                        vaga.Id,
+                        dto.Codigo, 
+                        dto.Titulo, 
+                        dto.Descricao, 
+                        vaga.DataCadastro, 
+                        vaga.Ativo);           
 
-            var validation = new VagaValidation().Validate(vaga);
+            var validation = new VagaValidation().Validate(vagaAtualizada);
 
             if (!validation.IsValid)
             {
@@ -75,16 +75,16 @@ namespace SisNet.Application.Services
             vagaDomainService.Remove(vaga);
         }
 
-        public List<VagaDTO> GetAll()
+        public List<VagaGetDTO> GetAll()
         {
             var lista = vagaDomainService.GetAll();
-            List<VagaDTO> vagas = new List<VagaDTO>();
+            List<VagaGetDTO> vagas = new List<VagaGetDTO>();
 
             if (lista != null)
             {
                 foreach (var item in vagas)
                 {
-                    var v = new VagaDTO()
+                    var v = new VagaGetDTO()
                     {
                         Id = item.Id,
                         Codigo = item.Codigo,
@@ -101,16 +101,13 @@ namespace SisNet.Application.Services
             return vagas;
         }
 
-        public VagaDTO GetById(Guid id)
+        public VagaGetDTO GetById(Guid id)
         {
             var vaga = vagaDomainService.GetById(id);
 
-            if (vaga == null)
-            {
-                throw new Exception("Vaga não encontrada.");
-            }
+            if (vaga == null) return null;
 
-            var vagaDto = new VagaDTO()
+            var vagaDto = new VagaGetDTO()
             {
                 Id = vaga.Id,
                 Codigo = vaga.Codigo,
@@ -123,16 +120,13 @@ namespace SisNet.Application.Services
             return vagaDto;
         }
 
-        public VagaDTO GetByCodigo(int codigo)
+        public VagaGetDTO GetByCodigo(int codigo)
         {
             var vaga = vagaDomainService.GetByCodigo(codigo);
 
-            if (vaga == null)
-            {
-                throw new Exception("Vaga não encontrada.");
-            }
-
-            var vagaDto = new VagaDTO()
+            if (vaga == null) return null;
+            
+            var vagaDto = new VagaGetDTO()
             {
                 Id = vaga.Id,
                 Codigo = vaga.Codigo,

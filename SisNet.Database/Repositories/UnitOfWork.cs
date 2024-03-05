@@ -9,12 +9,13 @@ namespace SisNet.Database.Repositories
         // DIP->princípio de injeção de dependência 
         private readonly SqlContext context;
         // transactions
-        private IDbContextTransaction? transaction;
+        private IDbContextTransaction transaction;
 
         public UnitOfWork(SqlContext context)
         {
             this.context = context;
         }
+
         public void Dispose()
         {
             context.Dispose();
@@ -24,7 +25,7 @@ namespace SisNet.Database.Repositories
 
         public void BeginTransaction()
         {
-            transaction = context.Database.BeginTransaction(); 
+            transaction = context.Database.BeginTransaction();
         }
 
         public void Commit()

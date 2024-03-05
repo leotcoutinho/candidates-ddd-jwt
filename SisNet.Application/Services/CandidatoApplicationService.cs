@@ -16,18 +16,16 @@ namespace SisNet.Application.Services
             this.candidatoDomainService = candidatoDomainService;
         }
 
-        public void Add(CandidatoDTO dto)
+        public void Add(CandidatoPostDTO dto)
         {
-            var candidato = new Candidato
-            {
-                Id = Guid.NewGuid(),
-                Nome = dto.Nome,
-                Email = dto.Email,
-                Link = dto.Link,
-                Cpf = dto.Cpf,
-                DataNascimento = dto.DataNascimento,
-                DataCadastro = DateTime.Now
-            };
+            var candidato = new Candidato(
+                  Guid.NewGuid(),
+                  dto.Nome,
+                  dto.Email,
+                  dto.Link,
+                  dto.Cpf,
+                  dto.DataNascimento,
+                  DateTime.Now);
 
             var validation = new CandidatoValidation().Validate(candidato);
 
@@ -39,7 +37,7 @@ namespace SisNet.Application.Services
             candidatoDomainService.Add(candidato);
         }
 
-        public void Update(CandidatoDTO dto)
+        public void Update(CandidatoGetDTO dto)
         {
             var candidato = candidatoDomainService.GetById(dto.Id);
 
@@ -48,13 +46,16 @@ namespace SisNet.Application.Services
                 throw new Exception("Candidato é inválido.");
             }
 
-            candidato.Nome = dto.Nome;
-            candidato.Email = dto.Email;
-            candidato.Cpf = dto.Cpf;
-            candidato.Link = dto.Link;
-            candidato.DataNascimento = dto.DataNascimento;
+            var candidatoModificado = new Candidato(
+                                        candidato.Id, 
+                                        dto.Nome, 
+                                        dto.Email, 
+                                        dto.Link, 
+                                        dto.Cpf, 
+                                        dto.DataNascimento,
+                                        candidato.DataCadastro);
 
-            var validation = new CandidatoValidation().Validate(candidato);
+            var validation = new CandidatoValidation().Validate(candidatoModificado);
 
             if (!validation.IsValid)
             {
@@ -76,14 +77,47 @@ namespace SisNet.Application.Services
             candidatoDomainService.Remove(candidato);
         }
 
-        public List<Candidato> GetAll()
+        public List<CandidatoGetDTO> GetAll()
         {
-            return candidatoDomainService.GetAll();
+            var candidatos = candidatoDomainService.GetAll();
+
+            var listaCandidatos = new List<CandidatoGetDTO>();
+
+            foreach (var c in candidatos) {
+                var candidatoLido = new CandidatoGetDTO() 
+                { 
+                    Id = c.Id,
+                    Cpf = c.Cpf,
+                    Nome = c.Nome,
+                    Email = c.Email,
+                    Link = c.Link,
+                    DataCadastro = c.DataCadastro,
+                    DataNascimento = c.DataNascimento
+                };
+
+                listaCandidatos.Add(candidatoLido);
+            
+            }
+
+            return listaCandidatos;
         }
 
-        public Candidato GetById(Guid id)
+        public CandidatoGetDTO GetById(Guid id)
         {
-            return candidatoDomainService.GetById(id);
+            var candidato = candidatoDomainService.GetById(id);
+           
+            var result = new CandidatoGetDTO()
+            {
+                Id = candidato.Id,
+                Email = candidato.Email,
+                Cpf = candidato.Cpf,
+                Nome = candidato.Nome,
+                Link = candidato.Link,
+                DataCadastro = candidato.DataCadastro,
+                DataNascimento = candidato.DataNascimento
+            };
+
+            return result;
         }
 
         public void Dispose()

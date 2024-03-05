@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using SisNet.Api.Adapters;
 using SisNet.Application.DTO;
 using SisNet.Application.Interfaces;
+using SisNet.Domain.Models;
 
 namespace SisNet.Api.Controllers
 {
@@ -16,12 +19,16 @@ namespace SisNet.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(VagaDTO dto)
+        public IActionResult Post(VagaPostDTO dto)
         {
             try
             {
                 vagaApplicationService.Add(dto);
-                return Ok();
+                return Ok(new { Message = "Vaga cadastrada com sucesso." });
+            }
+            catch(ValidationException ex)
+            {
+                return BadRequest(ValidationAdapter.Parse(ex.Errors));
             }
             catch (Exception e)
             {
@@ -30,12 +37,16 @@ namespace SisNet.Api.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put(VagaDTO dto)
+        public IActionResult Put(VagaGetDTO dto)
         {
             try
             {
                 vagaApplicationService.Update(dto);
                 return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ValidationAdapter.Parse(ex.Errors));
             }
             catch (Exception e)
             {
@@ -100,7 +111,7 @@ namespace SisNet.Api.Controllers
 
                 if (vaga == null)
                 {
-                    return NotFound();
+                    return NotFound("Vaga não encontrada.");
                 }
 
                 return Ok(vaga);

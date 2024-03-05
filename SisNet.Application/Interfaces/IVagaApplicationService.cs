@@ -5,11 +5,11 @@ namespace SisNet.Application.Interfaces
 {
     public interface IVagaApplicationService : IDisposable
     {
-        void Add(VagaDTO entity);
-        void Update(VagaDTO entity);
+        void Add(VagaPostDTO entity);
+        void Update(VagaGetDTO entity);
         void Remove(Guid id);
-        List<VagaDTO> GetAll();
-        VagaDTO GetById(Guid id);
-        VagaDTO GetByCodigo(int codigo);
+        List<VagaGetDTO> GetAll();
+        VagaGetDTO GetById(Guid id);
+        VagaGetDTO GetByCodigo(int codigo);
     }
 }
