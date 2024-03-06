@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using SisNet.Application.DTO;
 using SisNet.Application.Interfaces;
 using SisNet.Domain.Interfaces.Services;
@@ -11,20 +12,17 @@ namespace SisNet.Application.Services
     public class VagaApplicationService : IVagaApplicationService
     {
         private readonly IVagaDomainService vagaDomainService;
+        private readonly IMapper mapper;
 
-        public VagaApplicationService(IVagaDomainService vagaDomainService)
+        public VagaApplicationService(IVagaDomainService vagaDomainService, IMapper mapper)
         {
             this.vagaDomainService = vagaDomainService;
+            this.mapper = mapper;
         }
 
         public void Add(VagaPostDTO dto)
-        {
-            var vaga = new Vaga(
-                Guid.NewGuid(), 
-                dto.Codigo,
-                dto.Titulo,
-                dto.Descricao,
-                DateTime.Now,true);
+        {   
+            var vaga = mapper.Map<Vaga>(dto);   
 
             var validation = new VagaValidation().Validate(vaga);
 
@@ -36,22 +34,9 @@ namespace SisNet.Application.Services
             vagaDomainService.Add(vaga);
         }
 
-        public void Update(VagaGetDTO dto)
+        public void Update(VagaDTO dto)
         {
-            var vaga = vagaDomainService.GetById(dto.Id);
-
-            if (vaga == null)
-            {
-                throw new Exception("Vaga não encontrada");
-            }
-
-            var vagaAtualizada = new Vaga(
-                        vaga.Id,
-                        dto.Codigo, 
-                        dto.Titulo, 
-                        dto.Descricao, 
-                        vaga.DataCadastro, 
-                        vaga.Ativo);           
+            var vagaAtualizada = mapper.Map<Vaga>(dto);
 
             var validation = new VagaValidation().Validate(vagaAtualizada);
 
@@ -60,7 +45,7 @@ namespace SisNet.Application.Services
                 throw new ValidationException(validation.Errors);
             }
 
-            vagaDomainService.Update(vaga);
+            vagaDomainService.Update(vagaAtualizada);
         }
 
         public void Remove(Guid id)
@@ -75,68 +60,44 @@ namespace SisNet.Application.Services
             vagaDomainService.Remove(vaga);
         }
 
-        public List<VagaGetDTO> GetAll()
+        public List<VagaDTO> GetAll()
         {
             var lista = vagaDomainService.GetAll();
-            List<VagaGetDTO> vagas = new List<VagaGetDTO>();
+            List<VagaDTO> vagaslistaRetorno = new List<VagaDTO>();
 
             if (lista != null)
             {
-                foreach (var item in vagas)
+                foreach (var item in lista)
                 {
-                    var v = new VagaGetDTO()
-                    {
-                        Id = item.Id,
-                        Codigo = item.Codigo,
-                        DataCadastro = item.DataCadastro,
-                        Descricao = item.Descricao,
-                        Titulo = item.Titulo,
-                        Ativo = item.Ativo
-                    };
+                    var vaga = mapper.Map<VagaDTO>(item);
 
-                    vagas.Add(v);
+                    vagaslistaRetorno.Add(vaga);
                 }
             }
 
-            return vagas;
+            return vagaslistaRetorno;
         }
 
-        public VagaGetDTO GetById(Guid id)
+        public VagaDTO GetById(Guid id)
         {
             var vaga = vagaDomainService.GetById(id);
 
             if (vaga == null) return null;
 
-            var vagaDto = new VagaGetDTO()
-            {
-                Id = vaga.Id,
-                Codigo = vaga.Codigo,
-                DataCadastro = vaga.DataCadastro,
-                Descricao = vaga.Descricao,
-                Titulo = vaga.Titulo,
-                Ativo = vaga.Ativo
-            };
+            var retorno = mapper.Map<VagaDTO>(vaga);
 
-            return vagaDto;
+            return retorno;
         }
 
-        public VagaGetDTO GetByCodigo(int codigo)
+        public VagaDTO GetByCodigo(int codigo)
         {
             var vaga = vagaDomainService.GetByCodigo(codigo);
 
             if (vaga == null) return null;
-            
-            var vagaDto = new VagaGetDTO()
-            {
-                Id = vaga.Id,
-                Codigo = vaga.Codigo,
-                DataCadastro = vaga.DataCadastro,
-                Descricao = vaga.Descricao,
-                Titulo = vaga.Titulo,
-                Ativo = vaga.Ativo
-            };
 
-            return vagaDto;
+            var retorno = mapper.Map<VagaDTO>(vaga);
+
+            return retorno;
         }
 
         public void Dispose()

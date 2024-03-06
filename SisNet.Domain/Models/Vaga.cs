@@ -2,10 +2,7 @@
 {
     public class Vaga
     {
-        public Vaga()
-        {
-
-        }
+        public Vaga() { }
 
         public Vaga(Guid id, int codigo, string titulo, string descricao, DateTime dataCadastro, bool ativo)
         {

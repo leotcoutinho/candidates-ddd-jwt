@@ -1,4 +1,5 @@
-﻿using SisNet.Database.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using SisNet.Database.Context;
 using SisNet.Domain.Interfaces.Repositories;
 using SisNet.Domain.Models;
 
@@ -14,6 +15,6 @@ namespace SisNet.Database.Repositories
         public Vaga GetByCodigo(int codigo)
         {
             return dbSet.FirstOrDefault(x => x.Codigo.Equals(codigo));
-        }
+            }
     }
 }

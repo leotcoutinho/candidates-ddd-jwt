@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using SisNet.Application.DTO;
 using SisNet.Application.Interfaces;
 using SisNet.Domain.Interfaces.Services;
@@ -10,22 +11,17 @@ namespace SisNet.Application.Services
     public class CandidatoApplicationService : ICandidatoApplicationService
     {
         private readonly ICandidatoDomainService candidatoDomainService;
+        private readonly IMapper mapper;
 
-        public CandidatoApplicationService(ICandidatoDomainService candidatoDomainService)
+        public CandidatoApplicationService(ICandidatoDomainService candidatoDomainService, IMapper mapper)
         {
             this.candidatoDomainService = candidatoDomainService;
+            this.mapper = mapper;
         }
 
         public void Add(CandidatoPostDTO dto)
         {
-            var candidato = new Candidato(
-                  Guid.NewGuid(),
-                  dto.Nome,
-                  dto.Email,
-                  dto.Link,
-                  dto.Cpf,
-                  dto.DataNascimento,
-                  DateTime.Now);
+            var candidato = mapper.Map<Candidato>(dto);
 
             var validation = new CandidatoValidation().Validate(candidato);
 
@@ -37,7 +33,7 @@ namespace SisNet.Application.Services
             candidatoDomainService.Add(candidato);
         }
 
-        public void Update(CandidatoGetDTO dto)
+        public void Update(CandidatoDTO dto)
         {
             var candidato = candidatoDomainService.GetById(dto.Id);
 
@@ -47,13 +43,13 @@ namespace SisNet.Application.Services
             }
 
             var candidatoModificado = new Candidato(
-                                        candidato.Id, 
-                                        dto.Nome, 
-                                        dto.Email, 
-                                        dto.Link, 
-                                        dto.Cpf, 
-                                        dto.DataNascimento,
-                                        candidato.DataCadastro);
+                                                    candidato.Id,
+                                                    dto.Nome, 
+                                                    dto.Email, 
+                                                    dto.Cpf, 
+                                                    dto.Link, 
+                                                    dto.DataNascimento,
+                                                    dto.DataCadastro);
 
             var validation = new CandidatoValidation().Validate(candidatoModificado);
 
@@ -62,7 +58,7 @@ namespace SisNet.Application.Services
                 throw new ValidationException(validation.Errors);
             }
 
-            candidatoDomainService.Update(candidato);
+            candidatoDomainService.Update(candidatoModificado);
         }
 
         public void Remove(Guid id)
@@ -77,47 +73,28 @@ namespace SisNet.Application.Services
             candidatoDomainService.Remove(candidato);
         }
 
-        public List<CandidatoGetDTO> GetAll()
+        public List<CandidatoDTO> GetAll()
         {
             var candidatos = candidatoDomainService.GetAll();
 
-            var listaCandidatos = new List<CandidatoGetDTO>();
+            var listaCandidatos = new List<CandidatoDTO>();
 
             foreach (var c in candidatos) {
-                var candidatoLido = new CandidatoGetDTO() 
-                { 
-                    Id = c.Id,
-                    Cpf = c.Cpf,
-                    Nome = c.Nome,
-                    Email = c.Email,
-                    Link = c.Link,
-                    DataCadastro = c.DataCadastro,
-                    DataNascimento = c.DataNascimento
-                };
 
-                listaCandidatos.Add(candidatoLido);
-            
+                var candidatoLido = mapper.Map<CandidatoDTO>(c);
+                listaCandidatos.Add(candidatoLido);            
             }
 
             return listaCandidatos;
         }
 
-        public CandidatoGetDTO GetById(Guid id)
+        public CandidatoDTO GetById(Guid id)
         {
             var candidato = candidatoDomainService.GetById(id);
-           
-            var result = new CandidatoGetDTO()
-            {
-                Id = candidato.Id,
-                Email = candidato.Email,
-                Cpf = candidato.Cpf,
-                Nome = candidato.Nome,
-                Link = candidato.Link,
-                DataCadastro = candidato.DataCadastro,
-                DataNascimento = candidato.DataNascimento
-            };
 
-            return result;
+            var candidatoLido = mapper.Map<CandidatoDTO>(candidato);
+
+            return candidatoLido;
         }
 
         public void Dispose()

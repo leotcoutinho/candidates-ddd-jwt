@@ -2,10 +2,7 @@
 {
     public class Candidato
     {
-        public Candidato()
-        {
-
-        }
+        public Candidato() { }
 
         public Candidato(Guid id, string nome, string email, string cpf, string link, DateTime dataNascimento, DateTime dataCadastro)
         {

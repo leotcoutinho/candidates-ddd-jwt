@@ -1,6 +1,6 @@
 ﻿namespace SisNet.Application.DTO
 {
-    public class VagaGetDTO
+    public class VagaDTO
     {
         public Guid Id { get; set; }
         public int Codigo { get; set; }

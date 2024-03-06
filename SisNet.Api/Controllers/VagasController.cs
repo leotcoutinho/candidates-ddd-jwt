@@ -37,12 +37,19 @@ namespace SisNet.Api.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put(VagaGetDTO dto)
+        public IActionResult Put(VagaDTO dto)
         {
             try
             {
+                var vaga = vagaApplicationService.GetById(dto.Id);
+
+                if (vaga == null)
+                {
+                    return NotFound("Vaga não foi encontrada.");
+                }
+
                 vagaApplicationService.Update(dto);
-                return Ok();
+                return Ok("Vaga Atualizada com sucesso.");
             }
             catch (ValidationException ex)
             {

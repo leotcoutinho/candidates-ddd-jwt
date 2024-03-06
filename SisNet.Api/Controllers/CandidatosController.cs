@@ -37,7 +37,7 @@ namespace SisNet.Api.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put(CandidatoGetDTO dto)
+        public IActionResult Put(CandidatoDTO dto)
         {
             try
             {
