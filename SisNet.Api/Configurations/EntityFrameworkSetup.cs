@@ -8,7 +8,10 @@ namespace SisNet.Api.Configurations
         public static void AddEntityFrameworkSetup(this IServiceCollection service, IConfiguration configuration)
         {
             service.AddDbContext<SqlContext>
-                    (options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+                    (options => {
+                        options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                    });
         }
     }
 }

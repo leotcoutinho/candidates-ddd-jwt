@@ -10,7 +10,6 @@ namespace SisNet.Application.MapperProfiles
         {
             CreateMap<Vaga, VagaDTO>();
             CreateMap<Candidato, CandidatoDTO>();
-        }
-        
+        }        
     }
 }

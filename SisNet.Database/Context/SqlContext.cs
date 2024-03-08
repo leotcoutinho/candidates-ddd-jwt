@@ -92,6 +92,7 @@ namespace SisNet.Database.Context
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }      
+                
     }
 
 }

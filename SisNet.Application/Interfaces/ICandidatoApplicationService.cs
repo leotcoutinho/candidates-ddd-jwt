@@ -1,13 +1,14 @@
 ﻿using SisNet.Application.DTO;
+using SisNet.Application.ViewModels;
 
 namespace SisNet.Application.Interfaces
 {
     public interface ICandidatoApplicationService : IDisposable
     {
-        void Add(CandidatoPostDTO dto);
-        void Update(CandidatoDTO dto);
-        void Remove(Guid id);
-        List<CandidatoDTO> GetAll();
-        CandidatoDTO GetById(Guid id);
+        Task Add(CandidatoAddViewModel dto);
+        Task Update(CandidatoUpdateViewModel dto);
+        Task Remove(Guid id);
+        Task<List<CandidatoDTO>> GetAll();
+        Task<CandidatoDTO> GetById(Guid id);
     }
 }

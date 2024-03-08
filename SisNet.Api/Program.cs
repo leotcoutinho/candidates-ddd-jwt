@@ -1,34 +1,30 @@
 using SisNet.Api.Configurations;
-using SisNet.Application.MapperProfiles;
 using SisNet.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
 
-// Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+services.AddControllers();
+services.AddEndpointsApiExplorer();
 
-// ***---configurações manuais---***.
+// ***---manual service configuration---***.
 
 // swagger
-builder.Services.AddSwaggerSetup();
+SwaggerSetup.AddSwaggerSetup(services);
 // entity framework
-builder.Services.AddEntityFrameworkSetup(builder.Configuration);
+EntityFrameworkSetup.AddEntityFrameworkSetup(services, configuration);
 // cors
-builder.Services.AddCorsSetup();
+CorsSetup.AddCorsSetup(services);
 // automapper
-builder.Services.AddAutoMapper(typeof(DtoToModelProfile), typeof(ModelToDTOProfile));
-
+AutoMapperSetup.AddAutoMapperSetup(services);
 // registros dos contratos.
-DependencyInjection.Register(builder.Services);
+DependencyInjection.Register(services);
 
-//***----------------------------***
+// ***---using services---***.
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

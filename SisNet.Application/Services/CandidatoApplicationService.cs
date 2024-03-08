@@ -2,6 +2,7 @@
 using FluentValidation;
 using SisNet.Application.DTO;
 using SisNet.Application.Interfaces;
+using SisNet.Application.ViewModels;
 using SisNet.Domain.Interfaces.Services;
 using SisNet.Domain.Models;
 using SisNet.Domain.Validations;
@@ -19,7 +20,7 @@ namespace SisNet.Application.Services
             this.mapper = mapper;
         }
 
-        public void Add(CandidatoPostDTO dto)
+        public async Task Add(CandidatoAddViewModel dto)
         {
             var candidato = mapper.Map<Candidato>(dto);
 
@@ -30,26 +31,12 @@ namespace SisNet.Application.Services
                 throw new ValidationException(validation.Errors);
             }
 
-            candidatoDomainService.Add(candidato);
+            await Task.Run(() => candidatoDomainService.Add(candidato));
         }
 
-        public void Update(CandidatoDTO dto)
+        public async Task Update(CandidatoUpdateViewModel dto)
         {
-            var candidato = candidatoDomainService.GetById(dto.Id);
-
-            if (candidato == null)
-            {
-                throw new Exception("Candidato é inválido.");
-            }
-
-            var candidatoModificado = new Candidato(
-                                                    candidato.Id,
-                                                    dto.Nome, 
-                                                    dto.Email, 
-                                                    dto.Cpf, 
-                                                    dto.Link, 
-                                                    dto.DataNascimento,
-                                                    dto.DataCadastro);
+            var candidatoModificado = mapper.Map<Candidato>(dto); 
 
             var validation = new CandidatoValidation().Validate(candidatoModificado);
 
@@ -58,10 +45,10 @@ namespace SisNet.Application.Services
                 throw new ValidationException(validation.Errors);
             }
 
-            candidatoDomainService.Update(candidatoModificado);
+            await Task.Run(() => candidatoDomainService.Update(candidatoModificado));
         }
 
-        public void Remove(Guid id)
+        public async Task Remove(Guid id)
         {
             var candidato = candidatoDomainService.GetById(id);
 
@@ -70,10 +57,10 @@ namespace SisNet.Application.Services
                 throw new Exception("Candidato não encontrado.");
             }
 
-            candidatoDomainService.Remove(candidato);
+            await Task.Run(() => candidatoDomainService.Remove(candidato));
         }
 
-        public List<CandidatoDTO> GetAll()
+        public async Task<List<CandidatoDTO>> GetAll()
         {
             var candidatos = candidatoDomainService.GetAll();
 
@@ -85,16 +72,16 @@ namespace SisNet.Application.Services
                 listaCandidatos.Add(candidatoLido);            
             }
 
-            return listaCandidatos;
+            return await Task.Run(() => listaCandidatos);
         }
 
-        public CandidatoDTO GetById(Guid id)
+        public async Task<CandidatoDTO> GetById(Guid id)
         {
             var candidato = candidatoDomainService.GetById(id);
 
             var candidatoLido = mapper.Map<CandidatoDTO>(candidato);
 
-            return candidatoLido;
+            return await Task.Run(() => candidatoLido);
         }
 
         public void Dispose()

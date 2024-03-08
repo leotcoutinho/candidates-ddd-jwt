@@ -10,7 +10,7 @@ namespace SisNet.Domain.Validations
             RuleFor(x => x.Id).NotEmpty().WithMessage("Id é obrigatório!");
 
             RuleFor(x => x.Codigo)
-                .NotEmpty().WithMessage("Código é obrigatório!");               
+                .NotEmpty().WithMessage("Código é obrigatório!");
 
             RuleFor(x=>x.Titulo)
                 .NotEmpty().WithMessage("Título é obrigatório!")

@@ -2,6 +2,7 @@
 using FluentValidation;
 using SisNet.Application.DTO;
 using SisNet.Application.Interfaces;
+using SisNet.Application.ViewModels;
 using SisNet.Domain.Interfaces.Services;
 using SisNet.Domain.Models;
 using SisNet.Domain.Validations;
@@ -20,9 +21,9 @@ namespace SisNet.Application.Services
             this.mapper = mapper;
         }
 
-        public void Add(VagaPostDTO dto)
-        {   
-            var vaga = mapper.Map<Vaga>(dto);   
+        public async Task Add(VagaAddViewModel model)
+        {            
+            var vaga = mapper.Map<Vaga>(model);   
 
             var validation = new VagaValidation().Validate(vaga);
 
@@ -31,24 +32,31 @@ namespace SisNet.Application.Services
                 throw new ValidationException(validation.Errors);
             }
 
-            vagaDomainService.Add(vaga);
+            await Task.Run(() => vagaDomainService.Add(vaga));
         }
 
-        public void Update(VagaDTO dto)
+        public async Task Update(VagaUpdateViewModel dto)
         {
-            var vagaAtualizada = mapper.Map<Vaga>(dto);
+            var existe = vagaDomainService.GetById(Guid.Parse(dto.Id));
 
-            var validation = new VagaValidation().Validate(vagaAtualizada);
+            if (existe == null)
+            {
+                throw new ArgumentException("Id fornecido é inválido.");
+            }
+
+            var vagaModificada = mapper.Map<Vaga>(dto);
+
+            var validation = new VagaValidation().Validate(vagaModificada);
 
             if (!validation.IsValid)
             {
                 throw new ValidationException(validation.Errors);
             }
 
-            vagaDomainService.Update(vagaAtualizada);
+            await Task.Run(() => vagaDomainService.Update(vagaModificada));
         }
 
-        public void Remove(Guid id)
+        public async Task Remove(Guid id)
         {
             var vaga = vagaDomainService.GetById(id);
 
@@ -57,10 +65,10 @@ namespace SisNet.Application.Services
                 throw new Exception("Vaga não encontrada.");
             }
 
-            vagaDomainService.Remove(vaga);
+            await Task.Run(() => vagaDomainService.Remove(vaga));
         }
 
-        public List<VagaDTO> GetAll()
+        public async Task<List<VagaDTO>> GetAll()
         {
             var lista = vagaDomainService.GetAll();
             List<VagaDTO> vagaslistaRetorno = new List<VagaDTO>();
@@ -75,10 +83,10 @@ namespace SisNet.Application.Services
                 }
             }
 
-            return vagaslistaRetorno;
+            return await Task.Run(() => vagaslistaRetorno);
         }
 
-        public VagaDTO GetById(Guid id)
+        public async Task<VagaDTO> GetById(Guid id)
         {
             var vaga = vagaDomainService.GetById(id);
 
@@ -86,10 +94,10 @@ namespace SisNet.Application.Services
 
             var retorno = mapper.Map<VagaDTO>(vaga);
 
-            return retorno;
+            return await Task.Run(() => retorno);
         }
 
-        public VagaDTO GetByCodigo(int codigo)
+        public async Task<VagaDTO> GetByCodigo(int codigo)
         {
             var vaga = vagaDomainService.GetByCodigo(codigo);
 
@@ -97,7 +105,7 @@ namespace SisNet.Application.Services
 
             var retorno = mapper.Map<VagaDTO>(vaga);
 
-            return retorno;
+            return await Task.Run(() => retorno);
         }
 
         public void Dispose()

@@ -1,15 +1,15 @@
 ﻿using SisNet.Application.DTO;
-using SisNet.Domain.Models;
+using SisNet.Application.ViewModels;
 
 namespace SisNet.Application.Interfaces
 {
     public interface IVagaApplicationService : IDisposable
     {
-        void Add(VagaPostDTO entity);
-        void Update(VagaDTO entity);
-        void Remove(Guid id);
-        List<VagaDTO> GetAll();
-        VagaDTO GetById(Guid id);
-        VagaDTO GetByCodigo(int codigo);
+        Task Add(VagaAddViewModel entity);
+        Task Update(VagaUpdateViewModel entity);
+        Task Remove(Guid id);
+        Task<List<VagaDTO>> GetAll();
+        Task<VagaDTO> GetById(Guid id);
+        Task<VagaDTO> GetByCodigo(int codigo);
     }
 }

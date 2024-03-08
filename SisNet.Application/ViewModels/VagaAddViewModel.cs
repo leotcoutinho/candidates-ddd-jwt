@@ -1,6 +1,6 @@
-﻿namespace SisNet.Application.DTO
+﻿namespace SisNet.Application.ViewModels
 {
-    public class VagaPostDTO
+    public class VagaAddViewModel
     {
         public int Codigo { get; set; }
         public string Titulo { get; set; }

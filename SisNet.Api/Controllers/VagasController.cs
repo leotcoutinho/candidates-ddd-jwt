@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using SisNet.Api.Adapters;
-using SisNet.Application.DTO;
 using SisNet.Application.Interfaces;
-using SisNet.Domain.Models;
+using SisNet.Application.ViewModels;
 
 namespace SisNet.Api.Controllers
 {
@@ -18,17 +17,22 @@ namespace SisNet.Api.Controllers
             this.vagaApplicationService = vagaApplicationService;
         }
 
-        [HttpPost]
-        public IActionResult Post(VagaPostDTO dto)
+        [HttpPost()]
+        public async Task<IActionResult> Post(VagaAddViewModel dto)
         {
             try
-            {
-                vagaApplicationService.Add(dto);
+            {    
+                await vagaApplicationService.Add(dto);
+
                 return Ok(new { Message = "Vaga cadastrada com sucesso." });
             }
             catch(ValidationException ex)
             {
                 return BadRequest(ValidationAdapter.Parse(ex.Errors));
+            }
+            catch(ArgumentException ae)
+            {
+                return BadRequest(ae.Message);
             }
             catch (Exception e)
             {
@@ -36,19 +40,13 @@ namespace SisNet.Api.Controllers
             }
         }
 
-        [HttpPut]
-        public IActionResult Put(VagaDTO dto)
+        [HttpPut()]
+        public async Task<IActionResult> Put(VagaUpdateViewModel dto)
         {
             try
-            {
-                var vaga = vagaApplicationService.GetById(dto.Id);
+            { 
+                await vagaApplicationService.Update(dto);
 
-                if (vaga == null)
-                {
-                    return NotFound("Vaga não foi encontrada.");
-                }
-
-                vagaApplicationService.Update(dto);
                 return Ok("Vaga Atualizada com sucesso.");
             }
             catch (ValidationException ex)
@@ -61,12 +59,13 @@ namespace SisNet.Api.Controllers
             }
         }
 
-        [HttpDelete("id")]
-        public IActionResult Delete(Guid id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
         {
             try
             {
-                vagaApplicationService.Remove(id);
+                await vagaApplicationService.Remove(Guid.Parse(id));
+
                 return Ok();
             }
             catch (Exception e)
@@ -75,12 +74,12 @@ namespace SisNet.Api.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var vagas = vagaApplicationService.GetAll();
+                var vagas = await vagaApplicationService.GetAll();
                 return Ok(vagas);
             }
             catch (Exception e)
@@ -89,12 +88,12 @@ namespace SisNet.Api.Controllers
             }
         }
 
-        [HttpGet("id")]
-        public IActionResult Get(Guid id)
+        [HttpGet("GetById")]
+        public IActionResult Get(string id)
         {
             try
             {
-                var vaga = vagaApplicationService.GetById(id);
+                var vaga = vagaApplicationService.GetById(Guid.Parse(id));
 
                 if (vaga == null)
                 {
@@ -109,7 +108,7 @@ namespace SisNet.Api.Controllers
             }
         }
 
-        [HttpGet("codigo")]
+        [HttpGet("GetByCodigo")]
         public IActionResult Get(int codigo)
         {
             try

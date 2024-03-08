@@ -13,5 +13,22 @@ namespace SisNet.Domain.Services
         {
             this.unitOfWork = unitOfWork;
         }
+
+        public override void Update(Candidato entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException("Candidato inválido.");
+            }
+
+            var existeCandidato = base.GetById(entity.Id);
+
+            if(existeCandidato == null)
+            {
+                throw new Exception("Candidato não existe com este Id.");
+            }
+
+            base.Update(entity);
+        }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using SisNet.Api.Adapters;
-using SisNet.Application.DTO;
 using SisNet.Application.Interfaces;
+using SisNet.Application.ViewModels;
 
 namespace SisNet.Api.Controllers
 {
@@ -18,11 +18,11 @@ namespace SisNet.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(CandidatoPostDTO dto)
+        public async Task<IActionResult> Add(CandidatoAddViewModel dto)
         {
             try
             {
-                candidatoApplicationService.Add(dto);
+                await candidatoApplicationService.Add(dto);
 
                 return Ok(new { Message = "Candidato adicionado com sucesso."});
             }
@@ -37,11 +37,12 @@ namespace SisNet.Api.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put(CandidatoDTO dto)
+        public async Task<IActionResult> Update(CandidatoUpdateViewModel dto)
         {
             try
             {
-                candidatoApplicationService.Update(dto);
+                await candidatoApplicationService.Update(dto);
+
                 return Ok(new { Message = "Candidato atualizado com sucesso." });
             }
             catch (ValidationException ex)
@@ -55,12 +56,13 @@ namespace SisNet.Api.Controllers
            
         }
 
-        [HttpDelete("id")]
-        public IActionResult Delete(Guid id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
-                candidatoApplicationService.Remove(id);
+                await candidatoApplicationService.Remove(id);
+
                 return Ok(new { Message = "Candidato removido com sucesso." });
             }
             catch (Exception e)
@@ -69,17 +71,17 @@ namespace SisNet.Api.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> Get()
         {
-            var candidatos = candidatoApplicationService.GetAll();
+            var candidatos = await candidatoApplicationService.GetAll();
             return Ok(candidatos);
         }
 
-        [HttpGet("id")]
-        public IActionResult Get(Guid id)
+        [HttpGet("GetById")]
+        public async Task<IActionResult> Get(string id)
         {
-            var candidato = candidatoApplicationService.GetById(id);
+            var candidato = await candidatoApplicationService.GetById(Guid.Parse(id));
 
             if(candidato == null)
             {

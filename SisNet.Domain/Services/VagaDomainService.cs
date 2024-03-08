@@ -13,6 +13,18 @@ namespace SisNet.Domain.Services
             this.unitOfWork = unitOfWork;
         }
 
+        public override void Add(Vaga entity)
+        {
+            var existCode = GetByCodigo(entity.Codigo);
+
+            if (existCode != null)
+            {
+                throw new ArgumentException("Código já existe.");
+            }
+
+            base.Add(entity);
+        }
+
         public Vaga GetByCodigo(int codigo)
         {
            return unitOfWork.VagaRepository.GetByCodigo(codigo);
