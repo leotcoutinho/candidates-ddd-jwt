@@ -56,7 +56,7 @@ namespace SisNet.Api.Controllers
            
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
@@ -85,7 +85,7 @@ namespace SisNet.Api.Controllers
 
             if(candidato == null)
             {
-                return NotFound();
+                return NotFound(new { Message= "Id não encontrado."});
             }
 
             return Ok(candidato);

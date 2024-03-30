@@ -17,14 +17,14 @@ namespace SisNet.Api.Controllers
             this.vagaApplicationService = vagaApplicationService;
         }
 
-        [HttpPost()]
+        [HttpPost]
         public async Task<IActionResult> Post(VagaAddViewModel dto)
         {
             try
             {    
                 await vagaApplicationService.Add(dto);
 
-                return Ok(new { Message = "Vaga cadastrada com sucesso." });
+                return Created();
             }
             catch(ValidationException ex)
             {
@@ -40,14 +40,14 @@ namespace SisNet.Api.Controllers
             }
         }
 
-        [HttpPut()]
+        [HttpPut]
         public async Task<IActionResult> Put(VagaUpdateViewModel dto)
         {
             try
             { 
                 await vagaApplicationService.Update(dto);
 
-                return Ok("Vaga Atualizada com sucesso.");
+                return Ok(new { Message = "Vaga Atualizada com sucesso." });
             }
             catch (ValidationException ex)
             {
@@ -59,7 +59,7 @@ namespace SisNet.Api.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
             try
@@ -74,7 +74,7 @@ namespace SisNet.Api.Controllers
             }
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
             try
@@ -88,16 +88,16 @@ namespace SisNet.Api.Controllers
             }
         }
 
-        [HttpGet("GetById")]
-        public IActionResult Get(string id)
+        [HttpGet("get-by-id")]
+        public async Task<IActionResult> Get(string id)
         {
             try
             {
-                var vaga = vagaApplicationService.GetById(Guid.Parse(id));
+                var vaga = await Task.Run(() => vagaApplicationService.GetById(Guid.Parse(id)));
 
                 if (vaga == null)
                 {
-                    return NotFound();
+                    return NotFound(new { Message = "Id não encontrado."});
                 }
 
                 return Ok(vaga);
@@ -108,16 +108,16 @@ namespace SisNet.Api.Controllers
             }
         }
 
-        [HttpGet("GetByCodigo")]
-        public IActionResult Get(int codigo)
+        [HttpGet("get-by-codigo")]
+        public async Task<IActionResult> Get(int codigo)
         {
             try
             {
-                var vaga = vagaApplicationService.GetByCodigo(codigo);
+                var vaga = await Task.Run(()=> vagaApplicationService.GetByCodigo(codigo));
 
                 if (vaga == null)
                 {
-                    return NotFound("Vaga não encontrada.");
+                    return NotFound(new { Message = "Código da vaga não encontrado." });
                 }
 
                 return Ok(vaga);

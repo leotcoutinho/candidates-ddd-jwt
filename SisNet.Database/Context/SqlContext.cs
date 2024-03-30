@@ -43,7 +43,7 @@ namespace SisNet.Database.Context
 
         public SqlContext(DbContextOptions<SqlContext> options) : base(options) { }
 
-        public DbSet<Candidato> Vaga { get; set; }
+        public DbSet<Vaga> Vaga { get; set; }
         public DbSet<Candidato> Candidato { get; set; }
         public DbSet<CandidatoVaga> CandidatoVaga { get; set; }
 
